@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<title>WebGIS3</title>
+		<link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
+		<link rel="stylesheet" href="css/MyCSS.css">
+		<script src="https://js.arcgis.com/4.10/"></script>
+		<script src="js/MyJavascript.js"></script>
+
+	</head>
+
+	<body>
+		<div id="viewDiv"></div>
+		<div id="view2Div" ></div>
+		<span id="streetsLayerToggle">
+			<input type="checkbox" id="streetsLayer"> 路网
+			<input type="checkbox" id="housingLayer"> 房屋
+			<div id="layerNum"></div>
+			<div id="scaleDisplay"></div>
+			<div id="coordinateDisplay"></div>
+		</span>
+				
+		<span id="housingLayerToggle">
+			<section class="header">
+				<div class="btns">
+					<div class="btn-switch active-map" data-id="0">底图1</div>
+					<div class="btn-switch" > </div>
+					<div class="btn-switch" data-id="1">底图2</div>
+				</div>
+			</section>
+		</span>
+		
+		<span id="swipeToggle">
+			<section class="header">
+				<div class="btns">
+					<input type="checkbox" id="vertical"> 垂直卷帘
+					<input type="checkbox" id="level"> 水平卷帘
+				</div>
+			</section>
+		</span>
+	</body>
+</html>
