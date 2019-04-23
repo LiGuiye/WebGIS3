@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>Intro to FeatureLayer - 4.11</title>
+
+		<link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css" />
+		<script src="https://js.arcgis.com/4.11/"></script>
+
+		<style>
+			html,
+			body,
+			#viewDiv {
+				padding: 0;
+				margin: 0;
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+
+		<script>
+			require([
+				"esri/Map",
+				"esri/views/MapView",
+				"esri/layers/FeatureLayer"
+			], function(Map, MapView, FeatureLayer) {
+				var map = new Map({
+					basemap: "osm"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					popup: {
+						dockEnabled: true,
+						dockOptions: {
+							buttonEnabled: false,
+							breakpoint: false
+						}
+					}
+				});
+
+				var diamondSymbol = {
+					type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+					style: "square",
+					color: "blue",
+					size: "8px", // pixels
+					outline: { // autocasts as new SimpleLineSymbol()
+						color: [255, 255, 0],
+						width: 3 // points
+					}
+				};
+				var featureLayer = new FeatureLayer({
+					url: "https://services5.arcgis.com/YsDVtN13kM2RdIov/arcgis/rest/services/HenanChina/FeatureServer/0?token=MlUT_-vHi35fcvI18XQ1zL8KFX0P8A0Cpk2GLmwm3AYk1ebj9Ex6MutfQETJ9yABEHFFB3Kkpd99D4I9lPvNKlMrtA1mr4i4GS6al_W96JEWcspRZHvCiZlMkOzaeazNljnLQXYGhgYPeTAp1dH920UqmM6woujEVeItRx5D7hH69FXl3_0z_8BX-vlWsga9VlilkaSsGeonNX5_of4BOrYdwvpALYjMQ90UDq7Qe3guOp9X_HjBxA-ooSb_MXeR",
+					renderer: {
+						type: "simple", // autocasts as new SimpleRenderer()
+						symbol: diamondSymbol
+					},
+					popupTemplate: {
+						title: "lgy_PopupTemplate",
+						content: [{
+								type: "fields",
+								fieldInfos: [{
+									fieldName: "NAME",
+									visible: true,
+									label: "NAME  "
+								}]
+							},
+							{
+								type: "media",
+								mediaInfos: [{
+									title: "<b>PhotoLink</b>",
+									type: "image",
+									caption: "{Thumb_URL}",
+									value: {
+										sourceURL: "{Thumb_URL}"
+									}
+								}, ]
+							},
+						]
+					},
+					outFields: ["*"]
+				});
+				map.add(featureLayer);
+				featureLayer.when(function() {
+					view.extent = featureLayer.fullExtent;
+				});
+
+				var highlight;
+				view.on("pointer-move", function(event) {
+					view.hitTest(event).then(function(response) {
+						if (response.results.length) {
+							var graphic = response.results.filter(function(result) {
+								return result.graphic.layer == featureLayer;
+							})[0].graphic;
+							view.whenLayerView(featureLayer).then(function(layerView) {
+								if (highlight) {
+									highlight.remove();
+								}
+								highlight = layerView.highlight(graphic);
+							});
+						}
+					});
+				});
+
+
+
+
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="viewDiv"></div>
+	</body>
+</html>

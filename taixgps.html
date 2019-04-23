@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+
+		<title>Visualize points with a heatmap - 4.11</title>
+
+		<link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css" />
+
+		<style>
+			html,
+			body,
+			#viewDiv {
+				padding: 0;
+				margin: 0;
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+
+		<script src="https://js.arcgis.com/4.11/"></script>
+
+		<script>
+			require([
+				"esri/Map",
+				"esri/layers/CSVLayer",
+				"esri/views/MapView",
+				"esri/widgets/Legend",
+				"esri/renderers/visualVariables/OpacityVariable",
+			], function(Map, CSVLayer, MapView, Legend, OpacityVariable) {
+				const url =
+					"https://cxqttkl.github.io/web4gis15/wuhangps-tiny.csv";
+
+				const opacityVisualVariable = {
+					type: "opacity",
+					field: "T_Speed",
+					stops: [{
+							value: 0,
+							opacity: 0.1
+						},
+						{
+							value: 80,
+							opacity: 1
+						}
+					]
+				};
+
+				const rotationRenderer = {
+					type: "simple", // autocasts as new SimpleRenderer()
+					symbol: {
+						type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+						// use an SVG path to create an arrow shape
+						path: "M14.5,29 23.5,0 14.5,9 5.5,0z",
+						color: "#ffff00",
+						outline: {
+							color: [0, 0, 0, 0.5],
+							width: "0.5px"
+						},
+						// since the arrow points down, you can set the angle to 180
+						// to force it to point up (0 degrees North) by default
+						angle: 180,
+						size: 15
+					},
+					visualVariables: [{
+							type: "rotation", // indicates that symbols should be rotated based on value in field
+							field: "T_Heading", // field containing aspect values
+							rotationType: "geographic"
+						},
+						opacityVisualVariable
+					]
+				};
+
+				const layer = new CSVLayer({
+					url: url,
+					title: "Wuhan GPS in a day",
+					copyright: "Wuhan GPS",
+					latitudeField: "Lat",
+					longitudeField: "Long",
+					renderer: rotationRenderer
+				});
+
+				const map = new Map({
+					basemap: "gray",
+					layers: [layer]
+				});
+
+				const view = new MapView({
+					container: "viewDiv",
+					center: [114.3, 30.5],
+					zoom: 10,
+					map: map
+				});
+
+				view.ui.add(
+					new Legend({
+						view: view
+					}),
+					"bottom-left"
+				);
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="viewDiv"></div>
+	</body>
+</html>

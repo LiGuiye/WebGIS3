@@ -1,0 +1,93 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>ArcGIS JavaScript Tutorials: Create a Starter App</title>
+		<style>
+			html,
+			body,
+			#viewDiv {
+				padding: 0;
+				margin: 0;
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+
+		<link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/css/main.css">
+		<script src="https://js.arcgis.com/4.11/"></script>
+
+		<script>
+			require([
+				"esri/Map",
+				"esri/views/MapView",
+				"esri/renderers/HeatmapRenderer",
+				//*** ADD ***//
+				"esri/layers/FeatureLayer"
+			], function(Map, MapView, HeatmapRenderer, FeatureLayer) {
+
+				var map = new Map({
+					basemap: "topo-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					center: [-118.80543, 34.02700],
+					zoom: 13
+				});
+
+				const renderer = {
+					type: "heatmap",
+					colorStops: [{
+							color: "rgba(63, 40, 102, 0)",
+							ratio: 0
+						},
+						{
+							color: "#563098",
+							ratio: 0.2
+						},
+						{
+							color: "#6735be",
+							ratio: 0.4
+						},
+						{
+							color: "#7b3ce9",
+							ratio: 0.6
+						},
+						{
+							color: "#c29f80",
+							ratio: 0.8
+						},
+						{
+							color: "#ffff00",
+							ratio: 1
+						}
+					],
+					maxPixelIntensity: 25,
+					minPixelIntensity: 0,
+					blurRadius:4.8
+				};
+
+
+				// Create the layer and set the renderer
+				var trailheads = new FeatureLayer({
+					url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0",
+					renderer: renderer
+				});
+
+				// Add the layer
+				map.add(trailheads);
+
+
+
+
+
+
+			});
+		</script>
+	</head>
+	<body>
+		<div id="viewDiv"></div>
+	</body>
+</html>
