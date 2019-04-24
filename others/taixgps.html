@@ -28,7 +28,8 @@
 				"esri/views/MapView",
 				"esri/widgets/Legend",
 				"esri/renderers/visualVariables/OpacityVariable",
-			], function(Map, CSVLayer, MapView, Legend, OpacityVariable) {
+				"esri/renderers/visualVariables/ColorVariable",
+			], function(Map, CSVLayer, MapView, Legend, OpacityVariable, ColorVariable) {
 				const url =
 					"https://cxqttkl.github.io/web4gis15/wuhangps-tiny.csv";
 
@@ -40,7 +41,7 @@
 							opacity: 0.1
 						},
 						{
-							value: 80,
+							value: 20,
 							opacity: 1
 						}
 					]
@@ -54,18 +55,33 @@
 						path: "M14.5,29 23.5,0 14.5,9 5.5,0z",
 						color: "#ffff00",
 						outline: {
-							color: [0, 0, 0, 0.5],
-							width: "0.5px"
+							color: [0, 0, 0, 0.3],
+							width: "0px"
 						},
-						// since the arrow points down, you can set the angle to 180
-						// to force it to point up (0 degrees North) by default
 						angle: 180,
-						size: 15
+						size: 6
 					},
 					visualVariables: [{
 							type: "rotation", // indicates that symbols should be rotated based on value in field
 							field: "T_Heading", // field containing aspect values
-							rotationType: "geographic"
+							rotationType: "geographic",
+						}, {
+							type: "color",
+							field: "T_Speed",
+							legendOptions: {
+								title: "出租车速度"
+							},
+							stops: [{
+									value: 0,
+									color: "#F6CECE",
+									label: "0"
+								},
+								{
+									value: 20,
+									color: "#FF0000",
+									label: "20"
+								}
+							]
 						},
 						opacityVisualVariable
 					]

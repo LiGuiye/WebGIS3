@@ -24,93 +24,53 @@
 				"esri/Map",
 				"esri/layers/GeoJSONLayer",
 				"esri/views/MapView",
-				"esri/renderers/ClassBreaksRenderer"
-			], function(Map, GeoJSONLayer, MapView, ClassBreaksRenderer) {
+				"esri/renderers/ClassBreaksRenderer",
+				"esri/renderers/visualVariables/ColorVariable",
+				"esri/widgets/Legend",
+			], function(Map, GeoJSONLayer, MapView, ClassBreaksRenderer, ColorVariable, Legend) {
 				// If GeoJSON files are not on the same domain as your website, a CORS enabled server
 				// or a proxy is required.
 				const url =
 					"https://liguiye.github.io/WebGIS3/chinawgs84_simplify.json";
-
-				// Paste the url into a browser's address bar to download and view the attributes
-				// in the GeoJSON file.
-
-				const less35 = {
+				const defaultSym = {
 					type: "simple-fill", // autocasts as new SimpleFillSymbol()
-					color: "#fffcd4",
-					style: "solid",
 					outline: {
-						width: 0.2,
-						color: [255, 255, 255, 0.5]
+						color: [128, 128, 128, 0.2],
+						width: "0.1px"
 					}
 				};
-
-				const less50 = {
-					type: "simple-fill", // autocasts as new SimpleFillSymbol()
-					color: "#b1cdc2",
-					style: "solid",
-					outline: {
-						width: 0.2,
-						color: [255, 255, 255, 0.5]
-					}
-				};
-
-				const more50 = {
-					type: "simple-fill", // autocasts as new SimpleFillSymbol()
-					color: "#38627a",
-					style: "solid",
-					outline: {
-						width: 0.2,
-						color: [255, 255, 255, 0.5]
-					}
-				};
-
-				const more75 = {
-					type: "simple-fill", // autocasts as new SimpleFillSymbol()
-					color: "#0d2644",
-					style: "solid",
-					outline: {
-						width: 0.2,
-						color: [255, 255, 255, 0.5]
-					}
-				};
-
 				const renderer = {
-					type: "class-breaks", // autocasts as new ClassBreaksRenderer()
-					field: "pop2000",
-					classBreakInfos: [{
-							minValue: 0,
-							maxValue: 30000000,
-							symbol: less35,
-							label: "< 35%"
+					type: "simple", // autocasts as new SimpleRenderer()
+					symbol: defaultSym,
+					visualVariables: [{
+						type: "color",
+						field: "pop2010",
+						legendOptions: {
+							title: "2010年全国人口数"
 						},
-						{
-							minValue: 30000000,
-							maxValue: 60000000,
-							symbol: less50,
-							label: "35 - 50%"
-						},
-						{
-							minValue: 60000000,
-							maxValue: 90000000,
-							symbol: more50,
-							label: "50 - 75%"
-						},
-						{
-							minValue: 90000000,
-							maxValue: 120000000,
-							symbol: more75,
-							label: "> 75%"
-						},
-						{
-							minValue: 120000000,
-							maxValue: 1500000000,
-							symbol: more75,
-							label: "> 75%"
-						}
-					]
+						stops: [{
+								value: 0,
+								color: "#F6CECE",
+								label: "0"
+							},
+							{
+								value: 100000000,
+								color: "#FF0000",
+								label: "1亿"
+							}
+						]
+					}]
 				};
+
 				const geojsonLayer = new GeoJSONLayer({
 					url: url,
+					title: "全国人口数量分布图",
+					popupTemplate: {
+						// autocasts as new PopupTemplate()
+						title: "{ENGLISH}",
+						content: "Number:{pop2010}",
+
+					},
 					renderer: renderer
 				});
 
@@ -121,15 +81,17 @@
 
 				const view = new MapView({
 					container: "viewDiv",
-					center: [-168, 46],
-					zoom: 3,
+					center: [111, 36],
+					zoom: 4,
 					map: map
 				});
 
-
-
-
-
+				view.ui.add(
+					new Legend({
+						view: view
+					}),
+					"bottom-left"
+				);
 
 			});
 		</script>
