@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, maximum-scale=1,user-scalable=no"
+    />
+    <title>Flat vs. volumetric 3D symbol layers - 4.11</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      #paneDiv {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        padding: 12px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.11/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.11/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/FeatureLayer",
+        "esri/layers/support/LabelClass",
+        "esri/layers/CSVLayer",
+		"esri/symbols/WebStyleSymbol"
+      ], function(Map, SceneView, FeatureLayer, LabelClass, CSVLayer, WebStyleSymbol) {
+        
+        
+        var url =
+          //"https://github.com/LiGuiye/WebGIS3/blob/master/hospital%20site.csv";
+          "https://liguiye.github.io/WebGIS3/hospital%20site.csv";
+        var csvLayer = new CSVLayer({
+          url: url,
+          outFields: ["*"],
+		  
+          
+        });
+        
+        
+        
+        
+        
+        // Create the Map
+        var map = new Map({
+          basemap: "dark-gray"
+        });
+
+        // Create the SceneView and set initial camera
+        var view = new SceneView({
+          container: "viewDiv",
+          map: map,
+          camera: {
+            position: [116.46,39.92	, 1932626],
+            tilt: 40
+          }
+        });
+        
+        map.add(csvLayer);
+        
+        
+        
+
+        // Create iconSymbol and add to renderer
+        var iconSymbol = {
+          type: "point-3d", // autocasts as new PointSymbol3D()
+          symbolLayers: [
+            {
+              type: "icon", // autocasts as new IconSymbol3DLayer()
+              size: 12,
+              resource: {
+                primitive: "square"
+              },
+              material: {
+                color: "orange"
+              },
+              outline: {
+                color: "white",
+                size: 1
+              }
+            }
+          ]
+        };
+
+        var iconSymbolRenderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: iconSymbol
+        };
+
+        //3d symbol
+        var objectSymbol = {
+          type: "point-3d", // autocasts as new PointSymbol3D()
+          symbolLayers: [
+            {
+              type: "object", // autocasts as new ObjectSymbol3DLayer()
+              width: 700,
+              height: 1000,
+              resource: {
+                primitive: "cone"
+              },
+              material: {
+                color: "#FFD700"
+              }
+            }
+          ]
+        };
+		
+		var webStyleSymbol1 = new WebStyleSymbol({
+			name: "Standing Cone",
+			styleName: "EsriThematicShapesStyle"
+		});
+
+        var objectSymbolRenderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: webStyleSymbol1
+        };
+		
+
+
+        // Request feature layers and overwrite renderer
+        var featureLayer = new FeatureLayer({
+          url:
+            "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/CITIES_EastUSA/FeatureServer/0",
+          renderer: iconSymbolRenderer,
+          outFields: ["CITY_NAME"],
+          // Ensure that all features are shown at all scales
+          maxScale: 0,
+          minScale: 0,
+        });
+        map.add(featureLayer);
+
+        csvLayer.renderer = iconSymbolRenderer;
+
+
+
+
+        // Register the events listener to toggle between objectSymbol and iconSymbol
+        document.getElementById("asIcon").addEventListener("click", function() {
+          featureLayer.renderer = iconSymbolRenderer;
+          csvLayer.renderer = iconSymbolRenderer;
+        });
+        document
+          .getElementById("asObject")
+          .addEventListener("click", function() {
+            featureLayer.renderer = objectSymbolRenderer;
+            csvLayer.renderer = objectSymbolRenderer;
+          });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+    <div id="paneDiv">
+      Show points as:
+      <div>
+        <input
+          type="radio"
+          name="symbolType"
+          value="icon"
+          checked="checked"
+          id="asIcon"
+        />
+        <label for="asIcon">2D shape </label>
+      </div>
+
+      <div>
+        <input type="radio" name="symbolType" value="object" id="asObject" />
+        <label for="asObject">3D shape</label>
+      </div>
+    </div>
+  </body>
+</html>
