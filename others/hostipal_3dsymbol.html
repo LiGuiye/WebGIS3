@@ -6,7 +6,7 @@
       name="viewport"
       content="initial-scale=1, maximum-scale=1,user-scalable=no"
     />
-    <title>Flat vs. volumetric 3D symbol layers - 4.11</title>
+    <title>Hostipal 3D symbol layers</title>
     <style>
       html,
       body,
@@ -50,40 +50,26 @@
         var csvLayer = new CSVLayer({
           url: url,
           outFields: ["*"],
-		  
-          
         });
-        
-        
-        
-        
-        
-        // Create the Map
         var map = new Map({
           basemap: "dark-gray"
         });
-
-        // Create the SceneView and set initial camera
         var view = new SceneView({
           container: "viewDiv",
           map: map,
           camera: {
-            position: [116.46,39.92	, 1932626],
+            position: [116.46,38.92	, 1932626],
             tilt: 40
           }
         });
-        
         map.add(csvLayer);
-        
-        
-        
 
-        // Create iconSymbol and add to renderer
+        //2d symbol
         var iconSymbol = {
-          type: "point-3d", // autocasts as new PointSymbol3D()
+          type: "point-3d",
           symbolLayers: [
             {
-              type: "icon", // autocasts as new IconSymbol3DLayer()
+              type: "icon",
               size: 12,
               resource: {
                 primitive: "square"
@@ -98,18 +84,17 @@
             }
           ]
         };
-
         var iconSymbolRenderer = {
-          type: "simple", // autocasts as new SimpleRenderer()
+          type: "simple",
           symbol: iconSymbol
         };
 
         //3d symbol
         var objectSymbol = {
-          type: "point-3d", // autocasts as new PointSymbol3D()
+          type: "point-3d",
           symbolLayers: [
             {
-              type: "object", // autocasts as new ObjectSymbol3DLayer()
+              type: "object",
               width: 700,
               height: 1000,
               resource: {
@@ -122,8 +107,8 @@
           ]
         };
 		
-		var webStyleSymbol1 = new WebStyleSymbol({
-			name: "Standing Cone",
+		var webStyleSymbol = new WebStyleSymbol({
+			name: "Standing Cylinder",
 			styleName: "EsriThematicShapesStyle"
 		});
 
@@ -131,35 +116,20 @@
           type: "simple", // autocasts as new SimpleRenderer()
           symbol: webStyleSymbol1
         };
-		
 
 
-        // Request feature layers and overwrite renderer
-        var featureLayer = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/CITIES_EastUSA/FeatureServer/0",
-          renderer: iconSymbolRenderer,
-          outFields: ["CITY_NAME"],
-          // Ensure that all features are shown at all scales
-          maxScale: 0,
-          minScale: 0,
-        });
-        map.add(featureLayer);
-
-        csvLayer.renderer = iconSymbolRenderer;
+        
 
 
 
-
+		csvLayer.renderer = iconSymbolRenderer;
         // Register the events listener to toggle between objectSymbol and iconSymbol
         document.getElementById("asIcon").addEventListener("click", function() {
-          featureLayer.renderer = iconSymbolRenderer;
           csvLayer.renderer = iconSymbolRenderer;
         });
         document
           .getElementById("asObject")
           .addEventListener("click", function() {
-            featureLayer.renderer = objectSymbolRenderer;
             csvLayer.renderer = objectSymbolRenderer;
           });
       });
