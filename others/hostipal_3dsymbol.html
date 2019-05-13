@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="initial-scale=1, maximum-scale=1,user-scalable=no"
-    />
-    <title>Hostipal 3D symbol layers</title>
-    <style>
-      html,
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+		<title>Hostipal 3D symbol layers</title>
+		<style>
+			html,
       body,
       #viewDiv {
         padding: 0;
@@ -27,14 +24,11 @@
       }
     </style>
 
-    <link
-      rel="stylesheet"
-      href="https://js.arcgis.com/4.11/esri/themes/light/main.css"
-    />
-    <script src="https://js.arcgis.com/4.11/"></script>
+		<link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css" />
+		<script src="https://js.arcgis.com/4.11/"></script>
 
-    <script>
-      require([
+		<script>
+			require([
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/FeatureLayer",
@@ -47,7 +41,7 @@
         var url =
           //"https://github.com/LiGuiye/WebGIS3/blob/master/hospital%20site.csv";
           "https://liguiye.github.io/WebGIS3/hospital%20site.csv";
-        var csvLayer = new CSVLayer({
+        var layer = new CSVLayer({
           url: url,
           outFields: ["*"],
         });
@@ -58,11 +52,11 @@
           container: "viewDiv",
           map: map,
           camera: {
-            position: [116.46,38.92	, 1932626],
+            position: [116.46,38.92	, 1032626],
             tilt: 40
           }
         });
-        map.add(csvLayer);
+        map.add(layer);
 
         //2d symbol
         var iconSymbol = {
@@ -90,71 +84,72 @@
         };
 
         //3d symbol
-        var objectSymbol = {
-          type: "point-3d",
-          symbolLayers: [
-            {
-              type: "object",
-              width: 700,
-              height: 1000,
-              resource: {
-                primitive: "cone"
-              },
-              material: {
-                color: "#FFD700"
-              }
-            }
-          ]
-        };
+//         var objectSymbol = {
+//           type: "point-3d",
+//           symbolLayers: [
+//             {
+//               type: "object",
+//               width: 700,
+//               height: 1000,
+//               resource: {
+//                 primitive: "cone"
+//               },
+//               material: {
+//                 color: "#FFD700"
+//               }
+//             }
+//           ]
+//         };
 		
 		var webStyleSymbol = new WebStyleSymbol({
 			name: "Standing Cylinder",
 			styleName: "EsriThematicShapesStyle"
 		});
+		        var objectSymbolRenderer = {
+		  type: "simple", // autocasts as new SimpleRenderer()
+		  symbol: webStyleSymbol
+		};
 
-        var objectSymbolRenderer = {
-          type: "simple", // autocasts as new SimpleRenderer()
-          symbol: webStyleSymbol1
-        };
+// 		objectSymbolRenderer.symbol.fetchSymbol().then(function(webStyleSymbol) {
+// // 			    var objectSymbolLayer = webStyleSymbol.symbolLayers.getItemAt(0);
+// // 			    objectSymbolLayer.material = { color: "red" };
+//   objectSymbolRenderer.symbol = webStyleSymbol;
+// });
+
+		
+		
+		
+		
+		
 
 
-        
 
-
-
-		csvLayer.renderer = iconSymbolRenderer;
         // Register the events listener to toggle between objectSymbol and iconSymbol
         document.getElementById("asIcon").addEventListener("click", function() {
-          csvLayer.renderer = iconSymbolRenderer;
+          layer.renderer = iconSymbolRenderer;
         });
         document
           .getElementById("asObject")
           .addEventListener("click", function() {
-            csvLayer.renderer = objectSymbolRenderer;
+            layer.renderer = objectSymbolRenderer;
           });
       });
     </script>
-  </head>
+	</head>
 
-  <body>
-    <div id="viewDiv"></div>
-    <div id="paneDiv">
-      Show points as:
-      <div>
-        <input
-          type="radio"
-          name="symbolType"
-          value="icon"
-          checked="checked"
-          id="asIcon"
-        />
-        <label for="asIcon">2D shape </label>
-      </div>
+	<body>
+		<div id="viewDiv"></div>
+		<div id="paneDiv">
+			Show points as:
+			<div>
+				<input type="radio" name="symbolType" value="icon" checked="checked" id="asIcon" />
+				<label for="asIcon">2D shape </label>
+			</div>
 
-      <div>
-        <input type="radio" name="symbolType" value="object" id="asObject" />
-        <label for="asObject">3D shape</label>
-      </div>
-    </div>
-  </body>
+			<div>
+				<input type="radio" name="symbolType" value="object" id="asObject" />
+				<label for="asObject">3D shape</label>
+			</div>
+		</div>
+	</body>
 </html>
