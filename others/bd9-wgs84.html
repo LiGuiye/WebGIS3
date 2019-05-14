@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
+	</head>
+	<body>
+
+	</body>
+	<script>
+		const gcoord = require('gcoord');
+		var result = gcoord.transform(
+			[116.403988, 39.914266], // 经纬度坐标
+			gcoord.WGS84, // 当前坐标系
+			gcoord.BD09 // 目标坐标系
+		);
+
+		console.log(result);
+	</script>
+</html>
